@@ -5,23 +5,9 @@ const {Time} = require("./utils");
 const port = process.env.PORT || 7574;
 const app = express();
 
+const url = "mongodb+srv://Todolist:1234todo@cluster0.mkdwd.mongodb.net/Todo?retryWrites=true&w=majority";
+
 app.use(cors());
-
-const client = new MongoClient("mongodb+srv://Todolist:1234todo@cluster0.mkdwd.mongodb.net/Todo?retryWrites=true&w=majority");
-
-const start = async () => {
-    try {
-        await client.connect();
-        await client.db().createCollection('newTodo');
-        const newTodo = client.db.collection('newTodo');
-        await newTodo.insertOne({name: "FirstNameNew"});
-        const getNewTodo = newTodo.db.find();
-        console.log(getNewTodo);
-    } catch (e) {
-        console.log(e)
-    }
-}
-start();
 
 let todolistsArr = [
     {id: '13fdsfsf234sdwsd', title: 'todolist1', addedDate: Time(), order: 0},
@@ -45,6 +31,24 @@ app.get('/todolists', async function (req, res) {
         case "/todolists":
             try {
                 res.write(JSON.stringify(todolistsArr));
+
+                try {
+                    MongoClient.connect(url, function(err, db) {
+                        if (err) throw err;
+                        let dbo = db.db("newTodo");
+                        dbo.collection("customers").find({}).toArray(function(err, result) {
+                            if (err) throw err;
+                            console.log(result);
+                            db.close();
+                        });
+                    });
+                    console.log(getNewTodo);
+                } catch (e) {
+                    console.log(e)
+                } finally {
+                    await client.close();
+                }
+
             } catch (e) {
                 res.status(500).send(e);
             }
