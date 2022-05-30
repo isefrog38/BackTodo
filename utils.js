@@ -1,6 +1,19 @@
 // const mongoose = require("mongoose");
 
-const Time = () => {
+exports.Cors = (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Request-Method', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+    res.setHeader('Access-Control-Allow-Headers', '*');
+    if (req.method === "OPTIONS") {
+        res.writeHead(200);
+        res.end();
+        return true
+    }
+    return false
+}
+
+exports.Time = () => {
     let day = new Date().getDate();
     let year = new Date().getFullYear();
     let month = new Date().getMonth() + 1;
@@ -8,9 +21,7 @@ const Time = () => {
     return `${day < 10 ? `0${day}` : day}-${month < 10 ? `0${month}` : month}-${year}`
 }
 
-module.exports = { Time };
-
-// const UserSchema = new mongoose.Schema({
+// const OneTodolist = new mongoose.Schema({
 //     name: {
 //         type: String,
 //         required: true,
@@ -29,6 +40,6 @@ module.exports = { Time };
 //     },
 // });
 //
-// const User = mongoose.model("User", UserSchema);
+// const User = mongoose.model("Todo", OneTodolist);
 
 // module.exports = User;
