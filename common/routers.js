@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {deleteTodolist, addTodolist, updateTitleTodolist} = require("./Responses/AllResponses");
+const {deleteTodolist, addTodolist, updateTitleTodolist, getTaskTodolists} = require("./Responses/AllResponses");
 const {TodoDB} = require('./utils');
 
 
@@ -12,11 +12,20 @@ router.use(function (req, res, next) {
 
 
 router.get('/', async (req, res) => {
+    let search = req.query.search;
     try {
-        await TodoDB().then(db => db.find({}).toArray(async function (err, result) {
-            if (err) throw err;
-            return res.status(200).send(result);
-        }));
+        if (!!search) {
+            await TodoDB().then(db => db.find({title: search}).toArray(async function (err, result) {
+                if (err) throw err;
+                return res.status(200).send(result);
+            }));
+        }
+        else {
+            await TodoDB().then(db => db.find({}).toArray(async function (err, result) {
+                if (err) throw err;
+                return res.status(200).send(result);
+            }));
+        }
     } catch (e) {
         return res.status(500).send(e);
     }
@@ -59,8 +68,15 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-module.exports = router;
 
-//error: string | null
-//     totalCount: number
-//     items: TaskType[]
+router.get('todolists/:id/tasks',async (req, res) => {
+    let todolistId = req.params.id;
+    if (todolistId && typeof todolistId === "string") {
+        let result = await getTaskTodolists(todolistId);
+            return res.status(200).send({error: null, totalCount: result.tasks.length, items: result.tasks});
+    } else {
+        return res.status(404).send({error: "Error find Task in this Todo", totalCount: 0, items: []});
+    }
+});
+
+module.exports = router;

@@ -18,6 +18,6 @@ exports.updateTitleTodolist = async (id, title) => {
 }
 
 
-exports.getTasks = async (todolistId) => {
-    let result = await TodoDB().then(db => db.find({_id: ObjectId(id)}, {$set:{title}}));
+exports.getTaskTodolists = async (todolistId) => {
+    return await TodoDB().then(db => db.findOne({_id: ObjectId(todolistId)}));
 }
