@@ -18,7 +18,7 @@ exports.updateTitleTodolist = async (id, title) => {
     return result.modifiedCount === 1;
 }
 
-
-exports.getTaskTodolists = async (todolistId) => {
-    return await TodoDB().then(db => db.findOne({_id: ObjectId(todolistId)}));
-}
+//
+// exports.getTaskTodolists = async (todolistId) => {
+//     return await TodoDB().then(db => db.findOne({_id: ObjectId(todolistId)}));
+// }

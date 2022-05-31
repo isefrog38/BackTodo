@@ -1,8 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const {deleteTodolist, addTodolist, updateTitleTodolist, getTaskTodolists} = require("./Responses/AllResponses");
+const {
+    deleteTodolist,
+    addTodolist,
+    updateTitleTodolist,
+    getTaskTodolists,
+} = require("./Responses/AllResponses");
 const {TodoDB} = require('./utils');
 
+const Formula = (totalItemsCount, pageSize, page, result) => {
+    Math.ceil(totalItemsCount / pageSize)
+    return result.slice((page-1)*pageSize, page*pageSize)
+}
 
 router.use(function (req, res, next) {
     console.log('Time', Date.now());
@@ -13,20 +22,21 @@ router.use(function (req, res, next) {
 
 router.get('/', async (req, res) => {
     let search = req.query.search;
+    let {page, pageSize} = req.query;
     try {
         if (!!search) {
-            // let lowerSearch = search.toLowerCase();
             let resultSearch = await TodoDB().then(db => db.find({title: {$regex: `${search}`}}));
             await resultSearch.toArray(async function (err, result) {
                 if (err) throw err;
-                return res.status(200).send(result);
+                let array = Formula(result.length, pageSize, page, result);
+                return res.status(200).send({todolists: array, totalCount: result.length});
             });
-        }
-        else {
+        } else {
             let resultSearch = await TodoDB().then(db => db.find({}));
-                await resultSearch.toArray(async function (err, result) {
+            await resultSearch.toArray(async function (err, result) {
                 if (err) throw err;
-                return res.status(200).send(result);
+                let array = Formula(result.length, pageSize, page, result);
+                return res.status(200).send({todolists: array, totalCount: result.length});
             });
         }
     } catch (e) {
@@ -72,11 +82,11 @@ router.put('/:id', async (req, res) => {
 });
 
 
-router.get('todolists/:id/tasks',async (req, res) => {
+router.get('todolists/:id/tasks', async (req, res) => {
     let todolistId = req.params.id;
     if (todolistId && typeof todolistId === "string") {
         let result = await getTaskTodolists(todolistId);
-            return res.status(200).send({error: null, totalCount: result.tasks.length, items: result.tasks});
+        return res.status(200).send({error: null, totalCount: result.tasks.length, items: result.tasks});
     } else {
         return res.status(404).send({error: "Error find Task in this Todo", totalCount: 0, items: []});
     }
