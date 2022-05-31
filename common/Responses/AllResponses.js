@@ -3,7 +3,8 @@ const {Time, TodoDB} = require("../utils");
 
 
 exports.addTodolist = async (title) => {
-    let responseCreated = await TodoDB().then(db => db.insertOne({title, order: 0, addedDate: Time(), tasks: []}));
+    let responseCreated = await TodoDB()
+        .then(db => db.insertOne({title, order: 0, addedDate: Time()}));
     return responseCreated.insertedId;
 }
 

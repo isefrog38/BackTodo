@@ -15,16 +15,19 @@ router.get('/', async (req, res) => {
     let search = req.query.search;
     try {
         if (!!search) {
-            await TodoDB().then(db => db.find({title: search}).toArray(async function (err, result) {
+            // let lowerSearch = search.toLowerCase();
+            let resultSearch = await TodoDB().then(db => db.find({title: {$regex: `${search}`}}));
+            await resultSearch.toArray(async function (err, result) {
                 if (err) throw err;
                 return res.status(200).send(result);
-            }));
+            });
         }
         else {
-            await TodoDB().then(db => db.find({}).toArray(async function (err, result) {
+            let resultSearch = await TodoDB().then(db => db.find({}));
+                await resultSearch.toArray(async function (err, result) {
                 if (err) throw err;
                 return res.status(200).send(result);
-            }));
+            });
         }
     } catch (e) {
         return res.status(500).send(e);
@@ -36,7 +39,7 @@ router.post('/', async (req, res) => {
     if (typeof title === "string") {
         let id;
         await addTodolist(title).then(el => id = el);
-        return res.status(200).send({id: id});
+        return res.status(200).send({id});
     } else {
         return res.status(404).send("Title mast be are String type");
     }

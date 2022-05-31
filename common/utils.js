@@ -1,5 +1,5 @@
-// const mongoose = require("mongoose");
-
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 const {MongoClient} = require("mongodb");
 const ConfigUrl = require("./config");
 
@@ -11,6 +11,8 @@ exports.TodoDB = async () => {
     return collection
 }
 
+exports.MongooseConnect = async () => await mongoose.connect(ConfigUrl);
+
 
 exports.Time = () => {
     let day = new Date().getDate();
@@ -20,25 +22,47 @@ exports.Time = () => {
     return `${day < 10 ? `0${day}` : day}-${month < 10 ? `0${month}` : month}-${year}`
 }
 
-// const OneTodolist = new mongoose.Schema({
-//     name: {
-//         type: String,
-//         required: true,
-//     },
-//     id: {
-//         type: String,
-//         default: new Date().getTime().toString(),
-//     },
-//     addedDate: {
-//         type: String,
-//         default: new Date().getUTCDate().toString(),
-//     },
-//     order: {
-//         type: Number,
-//         default: 0,
-//     },
-// });
-//
-// const User = mongoose.model("Todo", OneTodolist);
+const Task = new Schema({
+    title: {
+        type: String,
+        required: true,
+    },
+    _id: {
+        type: String,
+        default: new Date().getTime().toString(),
+    },
+    createDate: {
+        type: String,
+        default: new Date().getUTCDate().toString(),
+    },
+    todoListId: {
+        type: String,
+        default: new Date().getTime(),
+    },
+    status: {
+        type: Number,
+        default: 0,
+    }
+});
 
-// module.exports = User;
+const Todolist = new Schema({
+    title: {
+        type: String,
+        required: true,
+    },
+    _id: {
+        type: String,
+        default: new Date().getTime().toString(),
+    },
+    addedDate: {
+        type: String,
+        default: new Date().getUTCDate().toString(),
+    },
+    order: {
+        type: Number,
+        default: 0,
+    }
+});
+
+exports.TodolistClass = mongoose.model("Todo", Todolist);
+exports.TaskClass = mongoose.model("Task", Task);
