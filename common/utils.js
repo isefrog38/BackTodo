@@ -1,5 +1,17 @@
 // const mongoose = require("mongoose");
 
+const {MongoClient} = require("mongodb");
+const ConfigUrl = require("./config");
+
+exports.TodoDB = async () => {
+    let data = await MongoClient.connect(ConfigUrl);
+    let dbo = await data.db("Todo");
+    let collection = await dbo.collection("newTodo");
+
+    return collection
+}
+
+
 exports.Time = () => {
     let day = new Date().getDate();
     let year = new Date().getFullYear();

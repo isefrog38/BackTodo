@@ -12,6 +12,6 @@
     "nodemon": "^2.0.16"
   },
   "scripts": {
-    "start": "nodemon index.js localhost 7574"
+    "start": "nodemon --inspect index.js localhost 7574"
   }
 }
