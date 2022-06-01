@@ -1,5 +1,5 @@
 const {ObjectId} = require("mongodb");
-const {Time, Date, TodoDB} = require("../utils");
+const {TodoDB} = require("../utils");
 
 
 exports.addTodolist = async (title, date, file) => {
@@ -16,9 +16,4 @@ exports.deleteTodolist = async (id) => {
 exports.updateTitleTodolist = async (id, title) => {
     let result = await TodoDB().then(db => db.updateOne({_id: ObjectId(id)}, {$set:{title}}));
     return result.modifiedCount === 1;
-}
-
-exports.downloadFile = async (id) => {
-    let result = await TodoDB().findOne({_id: ObjectId(id)});
-    return result.files.file
 }
