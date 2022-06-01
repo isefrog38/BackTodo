@@ -21,8 +21,7 @@ router.use(function (req, res, next) {
 
 
 router.get('/', async (req, res) => {
-    let search = req.query.search;
-    let {page, pageSize} = req.query;
+    let {page, pageSize, search} = req.query;
     try {
         if (!!search) {
             let resultSearch = await TodoDB().then(db => db.find({title: {$regex: `${search}`}}));
