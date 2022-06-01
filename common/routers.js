@@ -4,14 +4,9 @@ const {
     deleteTodolist,
     addTodolist,
     updateTitleTodolist,
-    getTaskTodolists,
+    downloadFile,
 } = require("./Responses/AllResponses");
-const {TodoDB} = require('./utils');
-
-const Formula = (totalItemsCount, pageSize, page, result) => {
-    Math.ceil(totalItemsCount / pageSize)
-    return result.slice((page-1)*pageSize, page*pageSize)
-}
+const {TodoDB, Formula} = require('./utils');
 
 router.use(function (req, res, next) {
     console.log('Time', Date.now());
@@ -44,10 +39,10 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    let {title} = req.body;
+    let {title, date, file} = req.body;
     if (typeof title === "string") {
         let id;
-        await addTodolist(title).then(el => id = el);
+        await addTodolist(title, date, file).then(el => id = el);
         return res.status(200).send({id});
     } else {
         return res.status(404).send("Title mast be are String type");
@@ -80,15 +75,41 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+// router.get('todolists/file/:name', async (req, res) => {
+//     let name = req.params.name;
+//
+//
+//     function cross_download(url, fileName) {
+//         let req = new XMLHttpRequest();
+//         req.open("GET", url, true);
+//         req.responseType = "blob";
+//         let __fileName = fileName;
+//         req.onload = function (event) {
+//             var blob = req.response;
+//             var contentType = req.getResponseHeader("content-type");
+//             if (window.navigator.msSaveOrOpenBlob) {
+//                 // Internet Explorer
+//                 window.navigator.msSaveOrOpenBlob(new Blob([blob], {type: contentType}), fileName);
+//             } else {
+//                 var link = document.createElement('a');
+//                 document.body.appendChild(link);
+//                 link.download = __fileName;
+//                 link.href = window.URL.createObjectURL(blob);
+//                 link.click();
+//                 document.body.removeChild(link); //remove the link when done
+//             }
+//         };
+//         req.send();
+//     }
+//     cross_download(`todolists/file/${name}`, `${name}`);
+//
+//     if (name && typeof name === "string") {
+//         let file = await downloadFile(name).then(el => el);
+//         return res.status(200).json(file);
+//     } else {
+//         return res.status(404).send("File not Found");
+//     }
+// });
 
-router.get('todolists/:id/tasks', async (req, res) => {
-    let todolistId = req.params.id;
-    if (todolistId && typeof todolistId === "string") {
-        let result = await getTaskTodolists(todolistId);
-        return res.status(200).send({error: null, totalCount: result.tasks.length, items: result.tasks});
-    } else {
-        return res.status(404).send({error: "Error find Task in this Todo", totalCount: 0, items: []});
-    }
-});
 
 module.exports = router;

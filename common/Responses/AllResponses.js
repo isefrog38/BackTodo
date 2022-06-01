@@ -1,10 +1,10 @@
 const {ObjectId} = require("mongodb");
-const {Time, TodoDB} = require("../utils");
+const {Time, Date, TodoDB} = require("../utils");
 
 
-exports.addTodolist = async (title) => {
+exports.addTodolist = async (title, date, file) => {
     let responseCreated = await TodoDB()
-        .then(db => db.insertOne({title, order: 0, addedDate: Time()}));
+        .then(db => db.insertOne({title, order: 0, addedDate: date, files: file}));
     return responseCreated.insertedId;
 }
 
@@ -18,7 +18,7 @@ exports.updateTitleTodolist = async (id, title) => {
     return result.modifiedCount === 1;
 }
 
-//
-// exports.getTaskTodolists = async (todolistId) => {
-//     return await TodoDB().then(db => db.findOne({_id: ObjectId(todolistId)}));
-// }
+exports.downloadFile = async (id) => {
+    let result = await TodoDB().findOne({_id: ObjectId(id)});
+    return result.files.file
+}
