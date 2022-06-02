@@ -13,7 +13,7 @@ exports.deleteTodolist = async (id) => {
     return result.deletedCount === 1;
 }
 
-exports.updateTitleTodolist = async (id, title) => {
-    let result = await TodoDB().then(db => db.updateOne({_id: ObjectId(id)}, {$set:{title}}));
+exports.updateTitleTodolist = async (id, title, date, file) => {
+    let result = await TodoDB().then(db => db.updateOne({_id: ObjectId(id)}, {$set:{title, addedDate: date, file}}));
     return result.modifiedCount === 1;
 }
