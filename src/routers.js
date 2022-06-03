@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
     deleteTodolist, addTodolist, updateTitleTodolist, updateFileInDataBase,
-    addFileInDataBase, deleteFileInDataBase, getFile,
+    addFileInDataBase, deleteFileInDataBase, getFile, getFileLanguage,
 } = require("./responses/AllResponses");
 const {TodoDB, Formula, FileDB} = require('./utils');
 const logger = require("./logger/loggerError");
@@ -27,13 +27,13 @@ router.get('/', async (req, res) => {
             });
         } else {
             let totalCount = await TodoDB().then(db => db.countDocuments());
-                let resultFind = await TodoDB().then(db => db.find().sort({addedDate: filter === "1" ? 1 : -1}));
-                await resultFind.toArray(async function (err, result) {
-                    if (err) throw err;
-                    let array = Formula(totalCount, pageSize, page, result);
-                    return res.status(200).json({todolists: array, totalCount});
-                })
-            }
+            let resultFind = await TodoDB().then(db => db.find().sort({addedDate: filter === "1" ? -1 : 1}));
+            await resultFind.toArray(async function (err, result) {
+                if (err) throw err;
+                let array = Formula(totalCount, pageSize, page, result);
+                return res.status(200).json({todolists: array, totalCount});
+            })
+        }
     } catch (e) {
         return res.status(500).json({error: e});
     }
@@ -44,7 +44,6 @@ router.get('/file/:id', async (req, res) => {
     let {id} = req.params;
     try {
         if (id) {
-            console.log(id)
             let file = await getFile(id);
             if (file) {
                 return res.status(200).send({file});
@@ -56,21 +55,29 @@ router.get('/file/:id', async (req, res) => {
     }
 });
 
-// router.get('todolists/language/${language}', async (req, res) => {
-//     let {id} = req.params;
-//     try {
-//         if (id) {
-//             console.log(id)
-//             let file = await getFile(id);
-//             if (file) {
-//                 return res.status(200).send({file});
-//             }
-//         }
-//         return res.status(500).json({error: "Something wrong"});
-//     } catch (e) {
-//         return res.status(500).json({error: e});
-//     }
-// });
+router.get('/language/:lang', async (req, res) => {
+    let lang = req.params.lang;
+    try {
+        if (lang === "rus") {
+            const idLanguage = '6299d9fe7b49c3bd32a82e0b';
+            let file = await getFileLanguage(idLanguage);
+            if (file) {
+                return res.status(200).send({file});
+            }
+        }
+        if (lang === "eng") {
+            const idLanguage = '6299d9ea7b49c3bd32a82e0a';
+            let file = await getFileLanguage(idLanguage);
+            if (file) {
+                console.log(file)
+                return res.status(200).send({file});
+            }
+        }
+        return res.status(500).json({error: "Something wrong"});
+    } catch (e) {
+        return res.status(500).json({error: e});
+    }
+});
 
 router.post('/:id', async (req, res) => {
     const {title, date, file} = req.body;

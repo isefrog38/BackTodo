@@ -1,5 +1,5 @@
 const {ObjectId} = require("mongodb");
-const {TodoDB, FileDB} = require("../utils");
+const {TodoDB, FileDB, LanguageDB} = require("../utils");
 
 
 exports.addTodolist = async (title, date, file) => {
@@ -48,4 +48,8 @@ exports.deleteFileInDataBase = async (id) => {
 
 exports.getFile = async (id) => {
     return await FileDB().then(el => el.findOne({taskId: ObjectId(id)}));
+}
+
+exports.getFileLanguage = async (id) => {
+    return await LanguageDB().then(el => el.findOne({_id: ObjectId(id)}));
 }

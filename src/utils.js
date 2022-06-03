@@ -35,6 +35,16 @@ exports.FileDB = async () => {
     }
 }
 
+exports.LanguageDB = async () => {
+    try {
+        let data = await MongoClient.connect(ConfigUrl);
+        let dbo = await data.db("Language");
+        return  dbo.collection("allLanguages");
+    } catch (error) {
+        logger.log('error', `Error LanguagesFile db`, {error});
+    }
+}
+
 exports.Formula = (totalItemsCount, pageSize, page, result) => {
     Math.ceil(totalItemsCount / pageSize)
     return result.slice((page-1)*pageSize, page*pageSize)
