@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const {
-    deleteTodolist, addTodolist, updateTitleTodolist, addFileInDataBase, deleteFileInDataBase, getFile,
+    deleteTodolist, addTodolist, updateTitleTodolist, updateFileInDataBase,
+    addFileInDataBase, deleteFileInDataBase, getFile,
 } = require("./responses/AllResponses");
 const {TodoDB, Formula} = require('./utils');
 const logger = require("./logger/loggerError");
@@ -60,9 +61,12 @@ router.post('/:id', async (req, res) => {
     let id;
     try {
         if (taskId) {
-            let result = await updateTitleTodolist(id, title, date, file);
+            let result = await updateTitleTodolist(taskId, title, date, file);
             if (result) {
-                return res.status(200).send(`Todolist ${id} Updated`);
+                let fileUpdate = await updateFileInDataBase(taskId, file);
+                if (fileUpdate) {
+                    return res.status(201).send(`Task ${taskId} Updated`);
+                }
             }
             logger.log('error', `Error params id todolist`);
             return res.status(500).send(`Invalid id todolist`);
@@ -71,8 +75,9 @@ router.post('/:id', async (req, res) => {
             if (resAdd && file) {
                 await addFileInDataBase(id, file);
             }
+            return res.status(200).json({id});
         }
-        return res.status(200).json({id});
+       return res.status(502).json('Somebody wrong');
     } catch (error) {
         logger.error(`Error todo request, from create`, {error});
         return res.status(404).json({error: `Error todo request, from create`});
@@ -99,25 +104,6 @@ router.delete('/:id', async (req, res) => {
         return res.status(500).json({error});
     }
 });
-
-
-// router.put('/:id', async (req, res) => {
-//     let {id} = req.params;
-//     let {title, date, file} = req.body;
-//     try {
-//         if (id && typeof id === "string" && typeof title === "string") {
-//             let result = await updateTitleTodolist(id, title, date, file);
-//             if (result) {
-//                 return res.status(200).send(`Todolist ${id} Updated`);
-//             }
-//             logger.log('error', `Error params id todolist`);
-//             return res.status(500).send(`Invalid id todolist`);
-//         }
-//     } catch (error) {
-//         logger.log('error', `DB error while editing file`, {error});
-//         return res.status(404).json({error});
-//     }
-// });
 
 
 module.exports = router;

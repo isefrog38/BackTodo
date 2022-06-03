@@ -24,8 +24,12 @@ exports.updateTitleTodolist = async (id, title, date, file) => {
     return result.modifiedCount === 1;
 }
 
-exports.addFileInDataBase = async (id, file) => {
+exports.updateFileInDataBase = async (id, file) => {
+    let result = await FileDB().then(db => db.updateOne({taskId: ObjectId(id)}, {$set:{...file}}));
+    return result.modifiedCount === 1;
+}
 
+exports.addFileInDataBase = async (id, file) => {
     let result = await FileDB().then(el => el.insertOne({taskId: id, ...file}));
     return result.insertedId === 1;
 }

@@ -20,12 +20,12 @@ const logger = createLogger({
             collection: 'LoggerError',
             format: json(),
         }),
-        // new transports.MongoDB({
-        //     level: 'info',
-        //     db: db,
-        //     collection: 'LoggerInfo',
-        //     format: json(),
-        // }),
+        new transports.File({
+            level: 'info',
+            maxsize: 50000,
+            filename: './src/logger/info/info.log',
+            format: json(),
+        }),
     ]
 });
 
