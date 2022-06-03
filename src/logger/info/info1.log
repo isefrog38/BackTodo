@@ -1,0 +1,22 @@
+{"level":"info","message":"TodoBack listening on port 7574","service":"user-service","timestamp":"2022-06-03T08:31:12.149Z"}
+{"level":"info","message":"TodoBack listening on port 7574","service":"user-service","timestamp":"2022-06-03T08:31:15.520Z"}
+{"level":"info","message":"TodoBack listening on port 7574","service":"user-service","timestamp":"2022-06-03T08:31:42.242Z"}
+{"level":"error","message":"POST /todolists/6299c6867067812c5192db00 200 1608.604 ms - 33","service":"user-service","timestamp":"2022-06-03T08:31:52.338Z"}
+{"level":"error","message":"GET /todolists?page=1&pageSize=10&search=&filter=0 200 1039.873 ms - 128","service":"user-service","timestamp":"2022-06-03T08:31:53.387Z"}
+{"level":"info","message":"TodoBack listening on port 7574","service":"user-service","timestamp":"2022-06-03T08:32:46.952Z"}
+{"level":"info","message":"TodoBack listening on port 7574","service":"user-service","timestamp":"2022-06-03T08:33:31.933Z"}
+{"level":"info","message":"TodoBack listening on port 7574","service":"user-service","timestamp":"2022-06-03T08:33:38.442Z"}
+{"level":"info","message":"TodoBack listening on port 7574","service":"user-service","timestamp":"2022-06-03T08:34:00.455Z"}
+{"level":"error","message":"POST /todolists/6299c6867067812c5192db00 200 1844.986 ms - 33","service":"user-service","timestamp":"2022-06-03T08:34:06.412Z"}
+{"level":"error","message":"GET /todolists?page=1&pageSize=10&search=&filter=0 200 1052.171 ms - 135","service":"user-service","timestamp":"2022-06-03T08:34:07.477Z"}
+{"level":"info","message":"TodoBack listening on port 7574","service":"user-service","timestamp":"2022-06-03T08:34:19.616Z"}
+{"level":"error","message":"GET /todolists?page=1&pageSize=10&search=&filter=0 304 1074.444 ms - -","service":"user-service","timestamp":"2022-06-03T08:34:23.121Z"}
+{"level":"error","message":"POST /todolists/6299c6867067812c5192db00 200 1849.202 ms - 33","service":"user-service","timestamp":"2022-06-03T08:34:47.998Z"}
+{"level":"error","message":"GET /todolists?page=1&pageSize=10&search=&filter=0 200 1019.424 ms - 139","service":"user-service","timestamp":"2022-06-03T08:34:49.038Z"}
+{"level":"info","message":"TodoBack listening on port 7574","service":"user-service","timestamp":"2022-06-03T08:36:23.101Z"}
+{"level":"error","message":"POST /todolists/6299c6867067812c5192db00 200 2398.332 ms - 33","service":"user-service","timestamp":"2022-06-03T08:36:32.183Z"}
+{"level":"error","message":"GET /todolists?page=1&pageSize=10&search=&filter=0 200 1313.115 ms - 129","service":"user-service","timestamp":"2022-06-03T08:36:33.514Z"}
+{"level":"error","message":"POST /todolists/6299c6867067812c5192db00 200 3132.032 ms - 33","service":"user-service","timestamp":"2022-06-03T08:36:49.409Z"}
+{"level":"error","message":"GET /todolists?page=1&pageSize=10&search=&filter=0 200 1374.608 ms - 125","service":"user-service","timestamp":"2022-06-03T08:36:50.800Z"}
+{"level":"error","message":"POST /todolists/6299c6867067812c5192db00 200 2037.320 ms - 33","service":"user-service","timestamp":"2022-06-03T08:37:09.147Z"}
+{"level":"error","message":"GET /todolists?page=1&pageSize=10&search=&filter=0 200 1007.595 ms - 125","service":"user-service","timestamp":"2022-06-03T08:37:10.162Z"}

@@ -3,13 +3,13 @@ const {TodoDB, FileDB} = require("../utils");
 
 
 exports.addTodolist = async (title, date, file) => {
-    if (!file) {
+    if (file) {
         let responseCreated = await TodoDB()
-            .then(db => db.insertOne({title, addedDate: date, files: 0}));
+            .then(db => db.insertOne({title, addedDate: date, file: 1}));
         return responseCreated.insertedId;
     } else {
         let responseCreated = await TodoDB()
-            .then(db => db.insertOne({title, addedDate: date, files: 1}));
+            .then(db => db.insertOne({title, addedDate: date, file: 0}));
         return responseCreated.insertedId;
     }
 }
@@ -20,8 +20,15 @@ exports.deleteTodolist = async (id) => {
 }
 
 exports.updateTitleTodolist = async (id, title, date, file) => {
-    let result = await TodoDB().then(db => db.updateOne({_id: ObjectId(id)}, {$set:{title, addedDate: date, file}}));
-    return result.modifiedCount === 1;
+    if (!file) {
+        let result = await TodoDB()
+            .then(db => db.updateOne({_id: ObjectId(id)}, {$set:{title, addedDate: date, file: 0}}));
+        return result.modifiedCount === 1;
+    } else {
+        let result = await TodoDB()
+            .then(db => db.updateOne({_id: ObjectId(id)}, {$set:{title, addedDate: date, file: 1}}));
+        return result.modifiedCount === 1;
+    }
 }
 
 exports.updateFileInDataBase = async (id, file) => {
@@ -30,7 +37,7 @@ exports.updateFileInDataBase = async (id, file) => {
 }
 
 exports.addFileInDataBase = async (id, file) => {
-    let result = await FileDB().then(el => el.insertOne({taskId: id, ...file}));
+    let result = await FileDB().then(el => el.insertOne({taskId: ObjectId(id), ...file}));
     return result.insertedId === 1;
 }
 
