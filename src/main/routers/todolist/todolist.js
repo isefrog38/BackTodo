@@ -1,20 +1,17 @@
 const express = require("express");
-const router = express.Router();
 const {
     deleteTodolist, addTodolist, updateTitleTodolist, updateFileInDataBase,
     addFileInDataBase, deleteFileInDataBase, getFile, getFileLanguage,
-} = require("./responses/AllResponses");
-const {TodoDB, Formula, FileDB} = require('./utils');
-const logger = require("./logger/loggerError");
-
-router.use(function (req, res, next) {
-    console.log('Time', Date.now());
-
-    next();
-});
+} = require("../responses/AllResponses");
+const {TodoDB, Formula, FileDB} = require('../../common/utils');
+const logger = require("../../common/logger/loggerError");
 
 
-router.get('/', async (req, res) => {
+
+const todolist = express.Router();
+
+
+todolist.get('/', async (req, res) => {
     let {page, pageSize, search, filter} = req.query;
     try {
         if (!!search) {
@@ -40,7 +37,7 @@ router.get('/', async (req, res) => {
 });
 
 
-router.get('/file/:id', async (req, res) => {
+todolist.get('/file/:id', async (req, res) => {
     let {id} = req.params;
     try {
         if (id) {
@@ -55,7 +52,7 @@ router.get('/file/:id', async (req, res) => {
     }
 });
 
-router.get('/language/:lang', async (req, res) => {
+todolist.get('/language/:lang', async (req, res) => {
     let lang = req.params.lang;
     try {
         if (lang === "rus") {
@@ -79,7 +76,7 @@ router.get('/language/:lang', async (req, res) => {
     }
 });
 
-router.post('/:id', async (req, res) => {
+todolist.post('/:id', async (req, res) => {
     const {title, date, file} = req.body;
     const taskId = req.params.id;
     console.log(file)
@@ -110,7 +107,7 @@ router.post('/:id', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+todolist.post('/', async (req, res) => {
     const {title, date, file} = req.body;
     try {
         let id;
@@ -129,7 +126,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+todolist.delete('/:id', async (req, res) => {
     let {id} = req.params;
     try {
         if (id) {
@@ -151,4 +148,4 @@ router.delete('/:id', async (req, res) => {
 });
 
 
-module.exports = router;
+module.exports = todolist;
