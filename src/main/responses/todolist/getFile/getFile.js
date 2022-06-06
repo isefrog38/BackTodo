@@ -13,6 +13,6 @@ exports.getFile = async (req, res) => {
         }
         return res.status(500).json({error: "Something wrong"});
     } catch (e) {
-        return res.status(500).json({error: e});
+        return res.status(500).json({error: e.message});
     }
 }

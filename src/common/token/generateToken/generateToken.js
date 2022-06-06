@@ -1,19 +1,3 @@
-
-
-
-
-exports.generateResetPasswordToken = async (userId) => {
-    const resetPasswordToken = uuidv1();
-
-    // await user.findByIdAndUpdate(
-    //     userId,
-    //     {resetPasswordToken, resetPasswordTokenDeathTime: Date.now() + (1000 * 60 * 10)}, // 10 min
-    //     {new: true}
-    // ).exec();
-
-    return resetPasswordToken;
-};
-
 exports.generateToken = (rememberMe) => {
     const token = uuidv1();
     const tokenDeathTime = rememberMe

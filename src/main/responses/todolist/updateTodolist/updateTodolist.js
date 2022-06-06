@@ -4,8 +4,8 @@ const {
     deleteFileInDataBase,
     updateFileInDataBase
 } = require("../todolistResponses");
-const {FileDB} = require("../../../common/utils");
-const logger = require("../../../common/logger/loggerError");
+const {FileDB} = require("../../../../common/utils");
+const logger = require("../../../../common/logger/loggerError");
 
 
 

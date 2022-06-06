@@ -1,8 +1,9 @@
 const password = "1234todo";
 const nameDB = "Todo";
 const cluster = "cluster0";
-const userName = "Todolist";
+const userName = "todolist";
 
-const ConfigUrl = `mongodb+srv://${userName}:${password}@${cluster}.mkdwd.mongodb.net/${nameDB}?retryWrites=true&w=majority`;
+exports.PORT = process.env.PORT || 7574;
 
-module.exports = ConfigUrl;
+exports.configUrl = `mongodb+srv://${userName}:${password}@${cluster}.mkdwd.mongodb.net/${nameDB}?retryWrites=true&w=majority`;
+

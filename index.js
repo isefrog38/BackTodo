@@ -1,21 +1,14 @@
-const cors = require('cors');
 const express = require('express');
-const bodyParser = require("body-parser");
-const router = require("./src/routers");
-const {httpLogger} = require('./src/utils');
-const logger = require("./src/logger/loggerError");
-const port = process.env.PORT || 7574;
-
+const logger = require("./src/common/logger/loggerError");
+const {routes} = require("./src/main/routers/routers");
+const {appUse} = require("./src/main/appUse");
+const {PORT} = require("./src/common/config");
 
 const app = express();
 
+appUse(app);
+routes(app);
 
-app.use(cors());
-app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
-app.use(bodyParser.json({limit: "50mb"}));
-app.use(httpLogger);
-
-app.use('/todolists', router);
 
 
 app.use((req,res) => {
@@ -23,6 +16,6 @@ app.use((req,res) => {
        res.status(504).send("General Error Server 504");
 });
 
-app.listen(port, () => {
-    logger.info(`TodoBack listening on port ${port}`);
+app.listen(PORT, () => {
+    logger.info(`TodoBack listening on port ${PORT}`);
 });

@@ -1,151 +1,22 @@
 const express = require("express");
-const {
-    deleteTodolist, addTodolist, updateTitleTodolist, updateFileInDataBase,
-    addFileInDataBase, deleteFileInDataBase, getFile, getFileLanguage,
-} = require("../responses/AllResponses");
-const {TodoDB, Formula, FileDB} = require('../../common/utils');
-const logger = require("../../common/logger/loggerError");
+const {getTodolists} = require("../../responses/todolist/getTodolists/getTodolists");
+const {localizationFile} = require("../../responses/todolist/localization/localization");
+const {updateTodolist} = require("../../responses/todolist/updateTodolist/updateTodolist");
+const {createTodolist} = require("../../responses/todolist/postTodolist/createTodolist");
+const {getFile} = require("../../responses/todolist/getFile/getFile");
+const {deleteTodolist} = require("../../responses/todolist/deleteTodolist/deleteTodolist");
 
 
 
 const todolist = express.Router();
 
 
-todolist.get('/', async (req, res) => {
-    let {page, pageSize, search, filter} = req.query;
-    try {
-        if (!!search) {
-            let resultSearch = (await TodoDB()
-                .then(db => db.find({title: {$regex: `${search}`}})));
-            await resultSearch.toArray(async function (err, result) {
-                if (err) throw err;
-                let array = Formula(result.length, pageSize, page, result);
-                return res.status(200).send({todolists: array, totalCount: result.length});
-            });
-        } else {
-            let totalCount = await TodoDB().then(db => db.countDocuments());
-            let resultFind = await TodoDB().then(db => db.find().sort({addedDate: filter === "1" ? -1 : 1}));
-            await resultFind.toArray(async function (err, result) {
-                if (err) throw err;
-                let array = Formula(totalCount, pageSize, page, result);
-                return res.status(200).json({todolists: array, totalCount});
-            })
-        }
-    } catch (e) {
-        return res.status(500).json({error: e});
-    }
-});
-
-
-todolist.get('/file/:id', async (req, res) => {
-    let {id} = req.params;
-    try {
-        if (id) {
-            let file = await getFile(id);
-            if (file) {
-                return res.status(200).send({file});
-            }
-        }
-        return res.status(500).json({error: "Something wrong"});
-    } catch (e) {
-        return res.status(500).json({error: e});
-    }
-});
-
-todolist.get('/language/:lang', async (req, res) => {
-    let lang = req.params.lang;
-    try {
-        if (lang === "rus") {
-            const idLanguage = '6299d9fe7b49c3bd32a82e0b';
-            let file = await getFileLanguage(idLanguage);
-            if (file) {
-                return res.status(200).send({file});
-            }
-        }
-        if (lang === "eng") {
-            const idLanguage = '6299d9ea7b49c3bd32a82e0a';
-            let file = await getFileLanguage(idLanguage);
-            if (file) {
-                console.log(file)
-                return res.status(200).send({file});
-            }
-        }
-        return res.status(500).json({error: "Something wrong"});
-    } catch (e) {
-        return res.status(500).json({error: e});
-    }
-});
-
-todolist.post('/:id', async (req, res) => {
-    const {title, date, file} = req.body;
-    const taskId = req.params.id;
-    console.log(file)
-    try {
-        if (taskId) {
-            let result = await updateTitleTodolist(taskId, title, date, file);
-            if (result) {
-                let resultFind = await FileDB().then(db => db.findOne({taskId: {$regex: `${taskId}`}}));
-                if (!resultFind) {
-                    await addFileInDataBase(taskId, file);
-                }
-                if (resultFind && !file) {
-                    await deleteFileInDataBase(taskId);
-                }
-                if (resultFind && file) {
-                    await updateFileInDataBase(taskId, file);
-                }
-                return res.status(200).json({id: taskId});
-            }
-            logger.error(`Error todo request, from create`);
-            return res.status(501).json('Somebody wrong');
-        }
-        logger.error(`Error todo request, from create`);
-        return res.status(502).json('Somebody wrong');
-    } catch (error) {
-        logger.error(`Error todo request, from create`, {error});
-        return res.status(405).json({error: `Error todo request, from create`});
-    }
-});
-
-todolist.post('/', async (req, res) => {
-    const {title, date, file} = req.body;
-    try {
-        let id;
-        if (title) {
-            const resAdd = await addTodolist(title, date, file).then(el => id = el);
-            if (resAdd && file) {
-                await addFileInDataBase(id, file);
-            }
-            return res.status(201).json({id});
-        }
-        logger.error(`Error todo request, from create`);
-        return res.status(502).json('Somebody wrong');
-    } catch (error) {
-        logger.error(`Error todo request, from create`, {error});
-        return res.status(405).json({error: `Error todo request, from create`});
-    }
-});
-
-todolist.delete('/:id', async (req, res) => {
-    let {id} = req.params;
-    try {
-        if (id) {
-            let result = await deleteTodolist(id);
-            if (result) {
-                let deleteFile = await deleteFileInDataBase(id);
-                if (deleteFile) {
-                    return res.status(200).send("Task is deleted")
-                }
-                return res.status(200).send("Task is deleted")
-            }
-        }
-        logger.error(`Error deleted todo , incorrect id todolist`);
-        return res.status(500).json("Error status 500");
-    } catch (error) {
-        logger.error(`Error deleted todo , incorrect id todolist`);
-        return res.status(500).json({error});
-    }
-});
+todolist.get('/', getTodolists);
+todolist.get('/file/:id', getFile);
+todolist.get('/language/:lang', localizationFile);
+todolist.post('/:id', updateTodolist);
+todolist.post('/', createTodolist);
+todolist.delete('/:id', deleteTodolist);
 
 
 module.exports = todolist;

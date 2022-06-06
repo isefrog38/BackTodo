@@ -1,14 +1,13 @@
-const {TodoDB, Formula} = require("../../../common/utils");
-
-
+const {TodoDB, Formula} = require("../../../../common/utils");
 
 
 exports.getTodolists = async (req, res) => {
     let {page, pageSize, search, filter} = req.query;
     try {
         if (!!search) {
-            let resultSearch = (await TodoDB()
-                .then(db => db.find({title: {$regex: `${search}`}})));
+            let resultSearch = await TodoDB()
+                .then(db => db.find({title: {$regex: `${search}`}}));
+            console.log('log search')
             await resultSearch.toArray(async function (err, result) {
                 if (err) throw err;
                 let array = Formula(result.length, pageSize, page, result);
@@ -24,6 +23,6 @@ exports.getTodolists = async (req, res) => {
             })
         }
     } catch (e) {
-        return res.status(500).json({error: e});
+        return res.status(500).json({error: e.message});
     }
 }
