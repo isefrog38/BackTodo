@@ -1,7 +1,7 @@
 const {MongoClient} = require("mongodb");
-const {ConfigUrl} = require("./config");
 const morgan = require('morgan');
 const logger = require("./logger/loggerError");
+const {configUrl} = require("./config");
 
 logger.stream = {
     write: (message) => logger.info(message.substring(0, message.lastIndexOf('\n'))),
@@ -15,7 +15,7 @@ exports.httpLogger = morgan(
 
 exports.TodoDB = async () => {
     try {
-        let data = await MongoClient.connect(ConfigUrl);
+        let data = await MongoClient.connect(configUrl);
         let dbo = await data.db("Todo");
         return  dbo.collection("allTask");
     } catch (error) {
