@@ -20,6 +20,6 @@ exports.deleteTodolist = async (req, res) => {
         return res.status(500).json("Error status 500");
     } catch (error) {
         logger.error(`Error deleted todo , incorrect id todolist`);
-        return res.status(500).json({error});
+        return res.status(500).json({error: error.message});
     }
 }

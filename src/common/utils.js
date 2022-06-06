@@ -13,6 +13,11 @@ exports.httpLogger = morgan(
     { stream: logger.stream }
 );
 
+exports.Formula = (totalItemsCount, pageSize, page, result) => {
+    Math.ceil(totalItemsCount / pageSize)
+    return result.slice((page-1)*pageSize, page*pageSize)
+};
+
 exports.TodoDB = async () => {
     try {
         let data = await MongoClient.connect(configUrl);
@@ -21,30 +26,34 @@ exports.TodoDB = async () => {
     } catch (error) {
         logger.log('error', `Error Task db`, {error});
     }
-}
-
+};
 
 exports.FileDB = async () => {
     try {
-        let data = await MongoClient.connect(ConfigUrl);
+        let data = await MongoClient.connect(configUrl);
         let dbo = await data.db("Todo");
         return  dbo.collection("allFile");
     } catch (error) {
         logger.log('error', `Error File db`, {error});
     }
-}
+};
 
 exports.LanguageDB = async () => {
     try {
-        let data = await MongoClient.connect(ConfigUrl);
+        let data = await MongoClient.connect(configUrl);
         let dbo = await data.db("Language");
         return  dbo.collection("allLanguages");
     } catch (error) {
         logger.log('error', `Error LanguagesFile db`, {error});
     }
-}
+};
 
-exports.Formula = (totalItemsCount, pageSize, page, result) => {
-    Math.ceil(totalItemsCount / pageSize)
-    return result.slice((page-1)*pageSize, page*pageSize)
-}
+exports.UsersDB = async () => {
+    try {
+        let data = await MongoClient.connect(configUrl);
+        let dbo = await data.db("Users");
+        return  dbo.collection("allUsers");
+    } catch (error) {
+        logger.log('error', `Error connecting users db`, {error: error.message});
+    }
+};

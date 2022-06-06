@@ -1,6 +1,6 @@
 const express = require('express');
 const logger = require("./src/common/logger/loggerError");
-const {routes} = require("./src/main/routers/routers");
+const {routes} = require("./src/main/routers");
 const {appUse} = require("./src/main/appUse");
 const {PORT} = require("./src/common/config");
 

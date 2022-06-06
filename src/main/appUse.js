@@ -1,15 +1,16 @@
 const cors = require('cors');
+const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-const {routers} = require("./routers/routers");
 const {httpLogger} = require("../common/utils");
 
 exports.appUse = (app) => {
 
-    app.use(cors());
     // parse application/x-www-form-urlencoded
     app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
     // parse application/json
     app.use(bodyParser.json({limit: "10mb"}));
+    app.use(cookieParser());
+    app.use(cors());
     app.use(httpLogger);
 
 

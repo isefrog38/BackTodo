@@ -1,7 +1,0 @@
-
-
-
-
-exports.authMe = async () => {
-
-}
