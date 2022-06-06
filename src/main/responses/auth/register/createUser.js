@@ -1,9 +1,9 @@
 const {validateAuth} = require("../../../../common/validator");
 const bCrypt = require("bcrypt");
-const {UserModel} = require('../../../../common/model/userModel');
-const {uuidV4} = require("mongodb/src/utils");
+const UserModel = require('../../../../common/model/userModel');
 const {MailService} = require("../../../../common/mailService/mailService");
 const {Token} = require("../../../../common/token/generateToken/generateToken");
+const uuid = require('uuidv1');
 
 exports.createUser = async (req, res) => {
     const {email, password} = req.body;
@@ -13,7 +13,7 @@ exports.createUser = async (req, res) => {
         else {
             try {
                 const userData = await registration(email, password);
-                res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly})
+                res.cookies('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly})
 
                 res.status(201).json(userData);
             } catch (e) {
@@ -26,7 +26,7 @@ exports.createUser = async (req, res) => {
 
 const registration = async (email, password) => {
     const hashPass = await bCrypt.hash(password, 10);
-    const activationLink = uuidV4();
+    const activationLink = uuid();
 
     const user = await UserModel.create({
         email,
