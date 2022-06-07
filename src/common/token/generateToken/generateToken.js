@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const {tokenModel} = require('../../model/tokenModel');
+const tokenModel = require('../../model/tokenModel');
 const {JWT_ACCESS_TOKEN, JWT_REFRESH_TOKEN} = require("../../config");
 
 
@@ -15,8 +15,9 @@ module.exports.Token = {
         const tokenData = await tokenModel.findOne({user: userId});
         if (tokenData) {
             tokenData.refreshToken = refreshToken;
-            return tokenData.save()
+            return tokenData.save();
         }
+
         return await tokenModel.create({user: userId, refreshToken});
     },
 }

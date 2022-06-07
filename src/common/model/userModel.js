@@ -6,8 +6,8 @@ const UserSchema = new Schema({
    email: {type: String, unique: true, required: true},
    password: {type: String, required: true},
    isActivated: {type: Boolean, default: false},
-   activationLink: {type: String, unique: true, required: true},
+   activationLink: {type: String},
 });
 
 
-exports.module = model('UserModel', UserSchema)
+module.exports = model('User', UserSchema);

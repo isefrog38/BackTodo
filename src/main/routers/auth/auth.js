@@ -1,5 +1,6 @@
 const express = require("express");
 const {createUser} = require("../../responses/auth/register/createUser");
+const {activatedLink} = require("../../responses/auth/activate/activate");
 
 
 
@@ -15,7 +16,7 @@ auth.post("/logOut");
 auth.post("/forgot");
 auth.post("/setNewPassword");
 
-auth.post("/activate/:link");
+auth.get("/activate/:link", activatedLink);
 
 
 
