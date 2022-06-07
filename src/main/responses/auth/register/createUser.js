@@ -1,15 +1,18 @@
-const {validateAuth} = require("../../../../common/validator");
 const bCrypt = require("bcrypt");
 const UserModel = require("../../../../common/model/userModel");
 const {MailService} = require("../../../../common/mailService/mailService");
 const {Token} = require("../../../../common/token/generateToken/generateToken");
 const uuid = require('uuidv1');
 const {API_URL} = require("../../../../common/config");
+const {validationResult} = require("express-validator");
 
-exports.createUser = async (req, res) => {
-    const {email, password} = req.body;
-
-    if (validateAuth(req, res, "createUser")) {
+exports.createUser = async (req, res, next) => {
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return next('Error Validation')
+        }
+        const {email, password} = req.body;
         const oldUser = await UserModel.findOne({email});
         if (oldUser) {
             res.status(400).json({error: "email already exists", email, in: "createUser"});
@@ -18,14 +21,14 @@ exports.createUser = async (req, res) => {
                 const userData = await registration(email, password);
                 res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
                 res.status(201).json(userData);
-            } catch (e) {
-                res.status(500).json({error: +e.message, info: "Back doesn't know what the error "});
+            } catch (error) {
+                res.status(500).json({error: error.message, info: "Back doesn't know what the error "});
             }
         }
+    } catch (error) {
+        res.status(500).json({error: error.message, info: "Back doesn't know what the error "});
     }
 };
-
-
 
 
 const registration = async (email, password) => {

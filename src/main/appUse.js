@@ -2,6 +2,7 @@ const cors = require('cors');
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const {httpLogger} = require("../common/utils");
+const {CLIENT_URL} = require("../common/config");
 
 exports.appUse = (app) => {
 
@@ -10,7 +11,10 @@ exports.appUse = (app) => {
     // parse application/json
     app.use(bodyParser.json({limit: "10mb"}));
     app.use(cookieParser());
-    app.use(cors());
+    app.use(cors({
+        credentials: true,
+        origin: CLIENT_URL,
+    }));
     app.use(httpLogger);
 
 

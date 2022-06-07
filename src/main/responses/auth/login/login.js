@@ -1,17 +1,39 @@
-const {validateAuth} = require("../../../../common/validator");
+const UserModel = require("../../../../common/model/userModel");
+const bcrypt = require("bcrypt");
+const {Token} = require("../../../../common/token/generateToken/generateToken");
 
 
-exports.logIn = async (req, res) => {
-    const {email, password, rememberMe} = req.body;
+exports.logIn = async (req, res, next) => {
+    try {
+        const {email, password, rememberMe} = req.body;
 
-    if (validateAuth(req, res, "logIn")) {
-        try {
+        const userData = await Login(email, password, rememberMe);
 
-        } catch (e) {
-            res.status(500).json({
-                error: e.message,
-                info: "Back doesn't know what the error",
-            });
-        }
+        res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+        res.status(201).json(userData);
+    } catch (e) {
+        res.status(500).json({error: e.message});
     }
+}
+
+
+const Login = async (email, password, rememberMe) => {
+    const user = await UserModel.findOne({email}).exec();
+    if (!user) {
+        throw new Error("User with this email not found")
+    }
+    const isPassEquals = await bcrypt.compare(password, user.password);
+    if (!isPassEquals) {
+        throw new Error("Incorrect user password")
+    }
+    const userDTO = {
+        id: user._id,
+        email: user.email,
+        isActivated: user.isActivated,
+    };
+
+    const tokens = Token.generateToken({...userDTO});
+    await Token.saveToken(userDTO.id, tokens.refreshToken)
+
+    return {...tokens, user: userDTO}
 }
