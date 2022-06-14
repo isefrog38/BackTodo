@@ -7,7 +7,6 @@ exports.getTodolists = async (req, res) => {
         if (!!search) {
             let resultSearch = await TodoDB()
                 .then(db => db.find({title: {$regex: `${search}`}}));
-            console.log('log search')
             await resultSearch.toArray(async function (err, result) {
                 if (err) throw err;
                 let array = Formula(result.length, pageSize, page, result);
